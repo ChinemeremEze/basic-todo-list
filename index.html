@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		  <title>TO-DO LIST</title>
+		  <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+		  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+		  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="css/style.css" rel="stylesheet">
+
+		  <style>
+		  .myclass {
+			color: red;
+		  }
+		  </style>
+	</head>
+
+	<body>
+
+		  <div id="app"></div>
+
+		  <script type="text/babel">
+	
+			 class App extends React.Component{
+			
+				constructor(props){
+					super(props)
+					this.state = {
+						lists: ["take the dog for a walk", "pick up groceries", "replace the lightbulb"],
+						message:"",
+						option:"ADD",
+						input:""
+					}
+
+				}
+				addItem(e){
+					e.preventDefault();
+					const {lists, message, input}=this.state;
+					const newItem =input;
+					
+					const isOnList = lists.includes(newItem);
+					if(isOnList){
+						this.setState({
+							message: "Item is already on the list"
+						})
+					}else{
+						newItem !== "" && this.setState({
+							lists:[...this.state.lists, newItem],
+							message: ""
+						})
+						
+						this.setState({
+							input:""});					
+					}
+				}
+				
+				edit(item){
+				
+					this.state.input=item;
+					//e.target.value = item;
+					this.setState({
+						option: "EDIT",
+						value :item
+					})
+				}
+				
+				editItem(item, e){
+				const {lists, message, input,value}=this.state;
+				var newItem =input;
+					for (var i =0; i<lists.length; i++){
+						if(lists[i] === value)
+							lists[i]= newItem;
+							
+					}
+					this.setState({
+						option: "ADD",
+						buyItem:[...this.state.lists]
+						
+					})
+				}
+				inputStateChange(event) {
+						this.setState({input: event.target.value});
+     }
+				changeButton(item, e) {
+					e.preventDefault();
+
+						if(this.state.option == "ADD"){
+							this.addItem(e);
+						//{(e) => this.addItem(e)}
+							//{this.addItem.bind(this,e)}
+						}else{
+							this.editItem(item, e);
+							
+							this.setState({
+							input:""});
+						}
+					  }
+				removeItem(item){
+				
+				const newlists = this.state.lists.filter(buyItem => {
+					return buyItem !== item;
+				});
+					this.setState({
+						lists: [... newlists]
+					})
+					if(newlists.length === 0 ){
+						this.setState({
+							message:"No items on your List, add some."
+						});
+					}
+				}
+				render(){
+					return(
+						<AppPresentation 
+						lists={this.state.lists}
+						message={this.state.message}
+						option={this.state.option}
+						addItem={this.addItem.bind(this)}
+						edit={this.edit.bind(this)}
+						changeButton={this.changeButton.bind(this)}
+						removeItem={this.removeItem.bind(this)}
+						editItem={this.editItem.bind(this)}
+						input={this.state.input}
+						inputStateChange={this.inputStateChange.bind(this)}
+						/>
+					);
+				}
+			};
+			
+			class AppPresentation extends React.Component{
+				render(){
+						const {lists, option, addForm, message, input}=this.props;
+					return(
+					<div>
+						<header>
+							<img src="images/list.jpg"/>
+							<h1>TO-DO LIST</h1>
+							
+							<form className="form-inline" onSubmit ={(e) => {this.props.changeButton(this,e)}} >
+								<div className="form-group">
+									<input type="text" value={input} onChange={this.props.inputStateChange} placeholder="Finish a project" className="form-control" id="newItemInput"  />
+								</div>
+								<button type="submit" className="btn btn-primary">{option}</button>
+							</form>
+						</header>
+						<div className="context">
+							{
+								(message !== ""|| lists.length === 0) && <p className ='message text-danger'>{message}</p>
+							}
+							{
+							lists.length > 0 &&
+							<table className="listTable table table-bordered table table-striped">
+								<caption>TO-DO LIST</caption>
+								<thead>
+									<tr>
+										<th>Edit</th>
+										<th>Item</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									{
+										lists.map(item =>{
+											return (
+											<tr key={item}>
+												<td><img src="images/edit.png" className="editImg" onClick = {this.props.edit.bind(this,item)} /></td>
+												<td>{item}</td>
+												<td className="text-right">
+													<button type="button" className="btn btn-default btn-sm"  onClick= {this.props.removeItem.bind(this,item)}>
+														Remove
+													</button>
+												</td>
+											</tr>
+											)
+										})
+									}
+									
+
+								</tbody>
+							</table>
+							}		
+						</div>
+					</div>
+					);
+				}
+			};
+			
+			ReactDOM.render(
+			<App/>, document.querySelector('#app')
+			);
+	  
+	  </script>
+	</body>
+</html>

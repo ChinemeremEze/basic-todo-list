@@ -1,0 +1,24 @@
+header{
+  margin: auto;
+
+display:block;
+width:300px;
+}
+.editImg{
+	width:30px;
+}
+.listTable{
+	  margin: auto;
+	
+}
+#app{
+	  margin: auto;
+
+	width:600px;
+	text-align:center;
+	background-color:#42f4e2;
+	
+}
+caption{
+	text-align:center;
+}
